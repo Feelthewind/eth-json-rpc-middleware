@@ -1,7 +1,7 @@
 {
   "name": "dekey-eth-json-rpc-middleware",
   "description": "Ethereum-related json-rpc-engine middleware.",
-  "version": "7.0.2",
+  "version": "7.0.4",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "browser": {

@@ -160,7 +160,7 @@ function createFetchConfigFromReq({
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'x-chain-id': chainId,
-      Authorization: encodedAuth,
+      Authorization: `Basic ${encodedAuth}`,
     },
     body: serializedPayload,
   };
