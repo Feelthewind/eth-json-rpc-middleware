@@ -4,7 +4,7 @@ import { Payload, Block } from './utils/cache';
 
 /* eslint-disable node/global-require,@typescript-eslint/no-require-imports */
 const fetch = global.fetch || require('node-fetch');
-const btoa = global.btoa || require('btoa');
+// const btoa = global.btoa || require('btoa');
 /* eslint-enable node/global-require,@typescript-eslint/no-require-imports */
 
 const RETRIABLE_ERRORS: string[] = [
@@ -34,6 +34,7 @@ interface FetchMiddlewareOptions {
   rpcUrl: string;
   originHttpHeaderKey?: string;
   chainId: number;
+  encodedAuth: string;
 }
 
 interface FetchMiddlewareFromReqOptions extends FetchMiddlewareOptions {
@@ -44,6 +45,7 @@ export function createFetchKlaytnMiddleware({
   rpcUrl,
   originHttpHeaderKey,
   chainId,
+  encodedAuth,
 }: FetchMiddlewareOptions): JsonRpcMiddleware<string[], Block> {
   return createAsyncMiddleware(async (req, res, _next) => {
     const { fetchUrl, fetchParams } = createFetchConfigFromReq({
@@ -51,6 +53,7 @@ export function createFetchKlaytnMiddleware({
       rpcUrl,
       originHttpHeaderKey,
       chainId,
+      encodedAuth,
     });
 
     // attempt request multiple times
@@ -130,6 +133,7 @@ function createFetchConfigFromReq({
   rpcUrl,
   originHttpHeaderKey,
   chainId,
+  encodedAuth,
 }: FetchMiddlewareFromReqOptions): FetchConfig {
   const parsedUrl: URL = new URL(rpcUrl);
   const fetchUrl: string = normalizeUrlFromParsed(parsedUrl);
@@ -156,16 +160,17 @@ function createFetchConfigFromReq({
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'x-chain-id': chainId,
+      Authorization: encodedAuth,
     },
     body: serializedPayload,
   };
 
   // encoded auth details as header (not allowed in fetch url)
-  if (parsedUrl.username && parsedUrl.password) {
-    const authString = `${parsedUrl.username}:${parsedUrl.password}`;
-    const encodedAuth = btoa(authString);
-    fetchParams.headers.Authorization = `Basic ${encodedAuth}`;
-  }
+  //   if (parsedUrl.username && parsedUrl.password) {
+  //     const authString = `${parsedUrl.username}:${parsedUrl.password}`;
+  //     const encodedAuth = btoa(authString);
+  //     fetchParams.headers.Authorization = `Basic ${encodedAuth}`;
+  //   }
 
   // optional: add request origin as header
   if (originHttpHeaderKey && originDomain) {
