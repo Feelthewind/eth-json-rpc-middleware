@@ -9,3 +9,4 @@ export * from './providerFromEngine';
 export * from './providerFromMiddleware';
 export * from './retryOnEmpty';
 export * from './wallet';
+export * from './fetchKlaytn';
